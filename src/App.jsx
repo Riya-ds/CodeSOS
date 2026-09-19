@@ -6,6 +6,28 @@ function App() {
   const [error, setError] = useState("");
   const [result, setResult] = useState(null);
 
+    function loadExample(type) {
+    if (type === "NameError") {
+      setCode('name = "Riya"\nprint(username)');
+      setError("NameError: name 'username' is not defined");
+    }
+
+    if (type === "TypeError") {
+      setCode('age = 20\nprint("Age: " + age)');
+      setError("TypeError: can only concatenate str and int");
+    }
+
+    if (type === "IndexError") {
+      setCode("numbers = [10, 20, 30]\nprint(numbers[5])");
+      setError("IndexError: list index out of range");
+    }
+
+    if (type === "ZeroDivisionError") {
+      setCode("a = 10\nb = 0\nprint(a / b)");
+      setError("ZeroDivisionError: division by zero");
+    }
+  }
+
     function copyFix() {
     if (result?.example) {
       navigator.clipboard.writeText(result.example);
@@ -197,6 +219,28 @@ function App() {
           >
             🔍 Analyze My Code
           </button>
+
+          <div className="demo-section">
+  <p className="demo-title">🧪 Try a demo error</p>
+
+  <div className="demo-buttons">
+    <button onClick={() => loadExample("NameError")}>
+      NameError
+    </button>
+
+    <button onClick={() => loadExample("TypeError")}>
+      TypeError
+    </button>
+
+    <button onClick={() => loadExample("IndexError")}>
+      IndexError
+    </button>
+
+    <button onClick={() => loadExample("ZeroDivisionError")}>
+      ZeroDivisionError
+    </button>
+  </div>
+</div>
 
         </div>
 
