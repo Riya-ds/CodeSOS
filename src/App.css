@@ -158,3 +158,144 @@ textarea:focus {
   transform: translateY(-2px);
   border-color: #7c5cff;
 }
+
+.history-card {
+  padding: 25px;
+  border-radius: 18px;
+  margin-bottom: 25px;
+  border: 1px solid #333;
+  background: #111;
+}
+
+.history-card h2 {
+  margin: 0 0 18px 0;
+  font-size: 20px;
+}
+
+.history-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.history-item {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 20px;
+  padding: 15px;
+  border-radius: 12px;
+  background: #1a1a1a;
+  border: 1px solid #333;
+  transition: 0.2s;
+}
+
+.history-item:hover {
+  border-color: #7c5cff;
+  transform: translateY(-1px);
+}
+
+.history-item strong {
+  font-size: 15px;
+}
+
+.history-item p {
+  margin: 6px 0 0;
+  font-family: monospace;
+  font-size: 12px;
+  opacity: 0.7;
+}
+
+.history-item span {
+  font-size: 12px;
+  opacity: 0.5;
+  white-space: nowrap;
+}
+
+.history-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 18px;
+}
+
+.history-header h2 {
+  margin: 0;
+}
+
+.clear-history-button {
+  padding: 8px 12px;
+  border: 1px solid #444;
+  border-radius: 9px;
+  background: #1b1b1b;
+  color: white;
+  font-size: 12px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.clear-history-button:hover {
+  border-color: #ff5c5c;
+  transform: translateY(-1px);
+}
+
+.reset-button {
+  width: 100%;
+  margin-top: 10px;
+  padding: 12px;
+  border: 1px solid #444;
+  border-radius: 12px;
+  background: #1b1b1b;
+  color: white;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.reset-button:hover {
+  border-color: #7c5cff;
+  transform: translateY(-1px);
+}
+
+@media (max-width: 600px) {
+  .app {
+    padding: 25px 15px;
+  }
+
+  .logo {
+    font-size: 32px;
+  }
+
+  .tagline {
+    font-size: 15px;
+  }
+
+  .input-card,
+  .result-card,
+  .history-card {
+    padding: 18px;
+  }
+
+  .history-item {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .history-item span {
+    text-align: left;
+  }
+
+  .history-header {
+    gap: 10px;
+  }
+
+  .demo-buttons {
+    gap: 8px;
+  }
+
+  .demo-buttons button {
+    flex: 1;
+    min-width: 120px;
+  }
+}

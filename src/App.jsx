@@ -5,6 +5,10 @@ function App() {
   const [code, setCode] = useState("");
   const [error, setError] = useState("");
   const [result, setResult] = useState(null);
+  const [history, setHistory] = useState(() => {
+  const savedHistory = localStorage.getItem("codesos-history");
+  return savedHistory ? JSON.parse(savedHistory) : [];
+});
 
     function loadExample(type) {
     if (type === "NameError") {
@@ -34,6 +38,33 @@ function App() {
       alert("✅ Corrected code copied!");
     }
   }
+
+  function clearHistory() {
+  setHistory([]);
+  localStorage.removeItem("codesos-history");
+} 
+
+function resetInputs() {
+  setCode("");
+  setError("");
+  setResult(null);
+}
+
+  function saveToHistory(title) {
+  const newItem = {
+    title: title,
+    error: error,
+    time: new Date().toLocaleTimeString()
+  };
+
+  const updatedHistory = [newItem, ...history].slice(0, 10);
+
+  setHistory(updatedHistory);
+  localStorage.setItem(
+    "codesos-history",
+    JSON.stringify(updatedHistory)
+  );
+}
   function analyzeError() {
     if (code.trim() === "" && error.trim() === "") {
       setResult({
@@ -58,7 +89,9 @@ function App() {
         fix: "Make sure the variable is defined before you use it.",
         prevent: "Define your variables before using them and check the spelling of variable names.",
         example: 'name = "Riya"\nprint(name)'
-      });
+      }); 
+      saveToHistory("NameError");
+
     } else if (error.includes("SyntaxError")) {
       setResult({
         type: "error",
@@ -71,6 +104,8 @@ function App() {
           "Check brackets, quotes, colons, indentation, and spelling.",
         example: 'if age > 18:\n    print("Adult")'
       });
+      saveToHistory("SyntaxError");
+
     } else if (error.includes("TypeError")) {
       setResult({
         type: "error",
@@ -82,6 +117,8 @@ function App() {
         fix: "Check the data types of the values you are using.",
         example: 'age = 20\nprint("Age: " + str(age))'
       });
+      saveToHistory("TypeError");
+
     } else if (error.includes("IndexError")) {
       setResult({
         type: "error",
@@ -94,6 +131,8 @@ function App() {
           "Check the list length and make sure the index is within range.",
         example: "numbers = [10, 20, 30]\nprint(numbers[0])"
       });
+      saveToHistory("IndexError");
+
     } else if (error.includes("ModuleNotFoundError")) {
       setResult({
         type: "error",
@@ -105,7 +144,9 @@ function App() {
         fix:
           "Install the missing package or check that the package name is correct.",
         example: "pip install pandas"
-           });
+        });
+        saveToHistory("ModuleNotFoundError");
+
     } else if (error.includes("ValueError")) {
       setResult({
         type: "error",
@@ -117,32 +158,8 @@ function App() {
         fix:
           "Check the value you are passing and make sure it is valid for the operation.",
         example: 'age = int("20")\nprint(age)'
-           });
-    } else if (error.includes("ValueError")) {
-      setResult({
-        type: "error",
-        title: "ValueError",
-        explanation:
-          "Python received a value of the correct type, but the value itself is not valid for the operation.",
-        simple:
-          "Python understands what kind of data you gave it, but the actual value cannot be used this way.",
-        fix:
-          "Check the value you are passing and make sure it is valid for the operation.",
-        example: 'age = int("20")\nprint(age)'
-            });
-    } else if (error.includes("ValueError")) {
-      setResult({
-        type: "error",
-        title: "ValueError",
-        explanation:
-          "Python received a value of the correct type, but the value itself is not valid for the operation.",
-        simple:
-          "Python understands what kind of data you gave it, but the actual value cannot be used this way.",
-        fix:
-          "Check the value you are passing and make sure it is valid for the operation.",
-        example: 'age = int("20")\nprint(age)'
-            });
-    
+         });
+         saveToHistory("ValueError");
     
     } else if (error.includes("KeyError")) {
       setResult({
@@ -157,6 +174,8 @@ function App() {
         example:
           'student = {"name": "Riya"}\nprint(student.get("age"))'
       });
+      saveToHistory("KeyError");
+
     } else if (error.includes("ZeroDivisionError")) {
       setResult({
         type: "error",
@@ -170,6 +189,8 @@ function App() {
         example:
           "a = 10\nb = 2\nprint(a / b)"
       });
+      saveToHistory("ZeroDivisionError");
+
     }else {
       setResult({
         type: "unknown",
@@ -219,6 +240,9 @@ function App() {
           >
             🔍 Analyze My Code
           </button>
+          <button className="reset-button" onClick={resetInputs}>
+  ↻ Reset
+</button>
 
           <div className="demo-section">
   <p className="demo-title">🧪 Try a demo error</p>
@@ -243,6 +267,34 @@ function App() {
 </div>
 
         </div>
+
+        {history.length > 0 && (
+  <div className="history-card">
+
+    <div className="history-header">
+      <h2>🕘 Recent Errors</h2>
+
+      <button className="clear-history-button" onClick={clearHistory}>
+        🗑️ Clear
+      </button>
+    </div>
+
+   
+    <div className="history-list">
+      {history.map((item, index) => (
+        <div className="history-item" key={index}>
+          <div>
+            <strong>{item.title}</strong>
+            <p>{item.error}</p>
+          </div>
+
+          <span>{item.time}</span>
+        </div>
+      ))}
+    </div>
+
+  </div>
+)}
 
         {result && (
           <div className="result-card">
