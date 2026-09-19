@@ -2,16 +2,19 @@ import { useState } from "react";
 import "./App.css";
 
 function App() {
+  const [code, setCode] = useState("");
   const [error, setError] = useState("");
   const [result, setResult] = useState(null);
 
   function analyzeError() {
-    if (error.trim() === "") {
+    if (code.trim() === "" && error.trim() === "") {
       setResult({
         type: "warning",
-        title: "No error entered",
-        explanation: "Please paste a coding error first.",
-        fix: "Paste your error message into the box above."
+        title: "Nothing to analyze",
+        explanation: "Please paste your code or error message first.",
+        simple: "CodeSOS needs something to look at.",
+        fix: "Paste your code and/or the error you received.",
+        example: ""
       });
       return;
     }
@@ -81,7 +84,7 @@ function App() {
         explanation:
           "CodeSOS couldn't identify this error yet.",
         simple:
-          "This is where our AI-powered analysis will eventually help.",
+          "Our AI analysis will handle errors that the basic analyzer does not recognize.",
         fix:
           "Make sure you pasted the complete error message.",
         example: "AI analysis coming next!"
@@ -103,21 +106,32 @@ function App() {
         <div className="input-card">
 
           <label className="input-label">
-            Paste your coding error
+            💻 Paste your code
+          </label>
+
+          <textarea
+            value={code}
+            onChange={(event) => setCode(event.target.value)}
+            placeholder={'Example:\nname = "Riya"\nprint("Hello " + name)'}
+            rows="10"
+          ></textarea>
+
+          <label className="input-label error-label">
+            🚨 Paste your error message
           </label>
 
           <textarea
             value={error}
             onChange={(event) => setError(event.target.value)}
             placeholder="Example: NameError: name 'username' is not defined"
-            rows="10"
+            rows="6"
           ></textarea>
 
           <button
             className="analyze-button"
             onClick={analyzeError}
           >
-            🔍 Analyze Error
+            🔍 Analyze My Code
           </button>
 
         </div>
@@ -136,7 +150,7 @@ function App() {
             <h3>🔧 How to fix it</h3>
             <p>{result.fix}</p>
 
-            <h3>💻 Example</h3>
+            <h3>💻 Corrected example</h3>
 
             <pre className="code-box">
               {result.example}
