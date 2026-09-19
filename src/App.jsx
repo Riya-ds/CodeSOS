@@ -6,6 +6,12 @@ function App() {
   const [error, setError] = useState("");
   const [result, setResult] = useState(null);
 
+    function copyFix() {
+    if (result?.example) {
+      navigator.clipboard.writeText(result.example);
+      alert("✅ Corrected code copied!");
+    }
+  }
   function analyzeError() {
     if (code.trim() === "" && error.trim() === "") {
       setResult({
@@ -28,6 +34,7 @@ function App() {
         simple:
           "You are using a name that Python has not been introduced to yet.",
         fix: "Make sure the variable is defined before you use it.",
+        prevent: "Define your variables before using them and check the spelling of variable names.",
         example: 'name = "Riya"\nprint(name)'
       });
     } else if (error.includes("SyntaxError")) {
@@ -76,21 +83,78 @@ function App() {
         fix:
           "Install the missing package or check that the package name is correct.",
         example: "pip install pandas"
+           });
+    } else if (error.includes("ValueError")) {
+      setResult({
+        type: "error",
+        title: "ValueError",
+        explanation:
+          "Python received a value of the correct type, but the value itself is not valid for the operation.",
+        simple:
+          "Python understands what kind of data you gave it, but the actual value cannot be used this way.",
+        fix:
+          "Check the value you are passing and make sure it is valid for the operation.",
+        example: 'age = int("20")\nprint(age)'
+           });
+    } else if (error.includes("ValueError")) {
+      setResult({
+        type: "error",
+        title: "ValueError",
+        explanation:
+          "Python received a value of the correct type, but the value itself is not valid for the operation.",
+        simple:
+          "Python understands what kind of data you gave it, but the actual value cannot be used this way.",
+        fix:
+          "Check the value you are passing and make sure it is valid for the operation.",
+        example: 'age = int("20")\nprint(age)'
+            });
+    } else if (error.includes("ValueError")) {
+      setResult({
+        type: "error",
+        title: "ValueError",
+        explanation:
+          "Python received a value of the correct type, but the value itself is not valid for the operation.",
+        simple:
+          "Python understands what kind of data you gave it, but the actual value cannot be used this way.",
+        fix:
+          "Check the value you are passing and make sure it is valid for the operation.",
+        example: 'age = int("20")\nprint(age)'
+            });
+    
+    
+    } else if (error.includes("KeyError")) {
+      setResult({
+        type: "error",
+        title: "KeyError",
+        explanation:
+          "Your code tried to access a key in a dictionary that does not exist.",
+        simple:
+          "You asked the dictionary for a key that it does not have.",
+        fix:
+          "Check the available dictionary keys or use .get() when the key may be missing.",
+        example:
+          'student = {"name": "Riya"}\nprint(student.get("age"))'
       });
-    } else {
+    } else if (error.includes("ZeroDivisionError")) {
+      setResult({
+        type: "error",
+        title: "ZeroDivisionError",
+        explanation:
+          "Your code tried to divide a number by zero, which Python does not allow.",
+        simple:
+          "You cannot divide something by 0.",
+        fix:
+          "Check the value of the divisor and make sure it is not zero.",
+        example:
+          "a = 10\nb = 2\nprint(a / b)"
+      });
+    }else {
       setResult({
         type: "unknown",
-        title: "Unknown Error",
-        explanation:
-          "CodeSOS couldn't identify this error yet.",
-        simple:
-          "Our AI analysis will handle errors that the basic analyzer does not recognize.",
-        fix:
-          "Make sure you pasted the complete error message.",
-        example: "AI analysis coming next!"
-      });
-    }
+      })
+    } 
   }
+
 
   return (
     <div className="app">
@@ -150,11 +214,20 @@ function App() {
             <h3>🔧 How to fix it</h3>
             <p>{result.fix}</p>
 
+            <h3>🛡️ How to prevent it</h3>
+            <p>{result.prevent}</p>
+
             <h3>💻 Corrected example</h3>
 
             <pre className="code-box">
               {result.example}
             </pre>
+            <button
+  className="copy-button"
+  onClick={copyFix}
+>
+  📋 Copy Fix
+</button>
 
           </div>
         )}
