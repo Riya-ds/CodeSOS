@@ -210,6 +210,46 @@ function resetInputs() {
           </p>
         </header>
 
+        <div className="how-it-works">
+  <h2>🧠 How CodeSOS Works</h2>
+
+  <p className="how-description">
+    Turn confusing coding errors into simple explanations and actionable fixes.
+  </p>
+
+  <div className="steps">
+    <div className="step">
+      <div className="step-number">1</div>
+      <h3>Paste</h3>
+      <p>Enter your code and error message.</p>
+    </div>
+
+    <div className="step-arrow">→</div>
+
+    <div className="step">
+      <div className="step-number">2</div>
+      <h3>Analyze</h3>
+      <p>CodeSOS identifies the error.</p>
+    </div>
+
+    <div className="step-arrow">→</div>
+
+    <div className="step">
+      <div className="step-number">3</div>
+      <h3>Understand</h3>
+      <p>Get a beginner-friendly explanation.</p>
+    </div>
+
+    <div className="step-arrow">→</div>
+
+    <div className="step">
+      <div className="step-number">4</div>
+      <h3>Fix</h3>
+      <p>See a corrected code example.</p>
+    </div>
+  </div>
+</div>
+
         <div className="input-card">
 
           <label className="input-label">

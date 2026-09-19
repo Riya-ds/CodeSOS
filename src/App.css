@@ -263,6 +263,14 @@ textarea:focus {
     padding: 25px 15px;
   }
 
+  .steps {
+  flex-direction: column;
+}
+
+.step-arrow {
+  transform: rotate(90deg);
+}
+
   .logo {
     font-size: 32px;
   }
@@ -298,4 +306,66 @@ textarea:focus {
     flex: 1;
     min-width: 120px;
   }
+}
+
+.how-it-works {
+  padding: 25px;
+  border-radius: 18px;
+  margin-bottom: 25px;
+  border: 1px solid #333;
+  background: #111;
+  text-align: center;
+}
+
+.how-it-works h2 {
+  margin: 0 0 8px;
+  font-size: 22px;
+}
+
+.how-description {
+  margin: 0 auto 25px;
+  font-size: 14px;
+  opacity: 0.65;
+  max-width: 600px;
+}
+
+.steps {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+
+.step {
+  flex: 1;
+  max-width: 170px;
+}
+
+.step-number {
+  width: 36px;
+  height: 36px;
+  margin: 0 auto 10px;
+  border-radius: 50%;
+  background: #7c5cff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+}
+
+.step h3 {
+  margin: 0 0 6px;
+  font-size: 15px;
+}
+
+.step p {
+  margin: 0;
+  font-size: 12px;
+  opacity: 0.6;
+  line-height: 1.5;
+}
+
+.step-arrow {
+  font-size: 22px;
+  opacity: 0.5;
 }
