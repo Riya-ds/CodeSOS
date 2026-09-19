@@ -66,117 +66,42 @@ function resetInputs() {
   );
 }
   function analyzeError() {
-    if (code.trim() === "" && error.trim() === "") {
-      setResult({
-        type: "warning",
-        title: "Nothing to analyze",
-        explanation: "Please paste your code or error message first.",
-        simple: "CodeSOS needs something to look at.",
-        fix: "Paste your code and/or the error you received.",
-        example: ""
-      });
-      return;
-    }
+  // =========================
+  // CODE-ONLY DETECTION
+  // =========================
 
-    if (error.includes("NameError")) {
+  if (error.trim() === "" && code.trim() !== "") {
+
+    // NameError detection
+    if (
+      code.includes("print(username)") &&
+      !code.includes("username =")
+    ) {
       setResult({
         type: "error",
         title: "NameError",
         explanation:
-          "Python cannot find the variable or name you are trying to use.",
+          "Your code is trying to use a variable that has not been defined.",
         simple:
-          "You are using a name that Python has not been introduced to yet.",
-        fix: "Make sure the variable is defined before you use it.",
-        prevent: "Define your variables before using them and check the spelling of variable names.",
-        example: 'name = "Riya"\nprint(name)'
-      }); 
-      saveToHistory("NameError");
-
-    } else if (error.includes("SyntaxError")) {
-      setResult({
-        type: "error",
-        title: "SyntaxError",
-        explanation:
-          "Python found a problem with the structure or grammar of your code.",
-        simple:
-          "Something about the way the code is written is not valid Python.",
+          "Python does not know what 'username' means because it was never created.",
         fix:
-          "Check brackets, quotes, colons, indentation, and spelling.",
-        example: 'if age > 18:\n    print("Adult")'
-      });
-      saveToHistory("SyntaxError");
-
-    } else if (error.includes("TypeError")) {
-      setResult({
-        type: "error",
-        title: "TypeError",
-        explanation:
-          "Your code is trying to perform an operation using an inappropriate data type.",
-        simple:
-          "Python expected one kind of data but received another kind.",
-        fix: "Check the data types of the values you are using.",
-        example: 'age = 20\nprint("Age: " + str(age))'
-      });
-      saveToHistory("TypeError");
-
-    } else if (error.includes("IndexError")) {
-      setResult({
-        type: "error",
-        title: "IndexError",
-        explanation:
-          "You tried to access a position in a list that does not exist.",
-        simple:
-          "Your list has fewer items than the position you are asking for.",
-        fix:
-          "Check the list length and make sure the index is within range.",
-        example: "numbers = [10, 20, 30]\nprint(numbers[0])"
-      });
-      saveToHistory("IndexError");
-
-    } else if (error.includes("ModuleNotFoundError")) {
-      setResult({
-        type: "error",
-        title: "ModuleNotFoundError",
-        explanation:
-          "Python cannot find a module or package that your program is trying to import.",
-        simple:
-          "Your code is asking for a package that Python cannot find.",
-        fix:
-          "Install the missing package or check that the package name is correct.",
-        example: "pip install pandas"
-        });
-        saveToHistory("ModuleNotFoundError");
-
-    } else if (error.includes("ValueError")) {
-      setResult({
-        type: "error",
-        title: "ValueError",
-        explanation:
-          "Python received a value of the correct type, but the value itself is not valid for the operation.",
-        simple:
-          "Python understands what kind of data you gave it, but the actual value cannot be used this way.",
-        fix:
-          "Check the value you are passing and make sure it is valid for the operation.",
-        example: 'age = int("20")\nprint(age)'
-         });
-         saveToHistory("ValueError");
-    
-    } else if (error.includes("KeyError")) {
-      setResult({
-        type: "error",
-        title: "KeyError",
-        explanation:
-          "Your code tried to access a key in a dictionary that does not exist.",
-        simple:
-          "You asked the dictionary for a key that it does not have.",
-        fix:
-          "Check the available dictionary keys or use .get() when the key may be missing.",
+          "Define the variable before using it, and check that its spelling is correct.",
+        prevent:
+          "Define variables before using them and keep variable names consistent.",
         example:
-          'student = {"name": "Riya"}\nprint(student.get("age"))'
+          'username = "Riya"\nprint(username)'
       });
-      saveToHistory("KeyError");
 
-    } else if (error.includes("ZeroDivisionError")) {
+      saveToHistory("NameError");
+      return;
+    }
+
+    // ZeroDivisionError detection
+    if (
+      code.includes("/ 0") ||
+      code.includes("/0") ||
+      (code.includes("b = 0") && code.includes("/ b"))
+    ) {
       setResult({
         type: "error",
         title: "ZeroDivisionError",
@@ -185,29 +110,334 @@ function resetInputs() {
         simple:
           "You cannot divide something by 0.",
         fix:
-          "Check the value of the divisor and make sure it is not zero.",
+          "Check the divisor and make sure it is not zero.",
+        prevent:
+          "Validate the divisor before performing division.",
         example:
           "a = 10\nb = 2\nprint(a / b)"
       });
-      saveToHistory("ZeroDivisionError");
 
-    } else {
-  setResult({
-    type: "unknown",
-    title: "Unknown Error",
-    explanation:
-      "CodeSOS could not identify this error using its built-in analyzer.",
-    simple:
-      "This error is not in our current list of common errors.",
-    fix:
-      "Try checking the error message carefully or use AI-powered analysis for deeper assistance.",
-    prevent:
-      "Keep your error messages and traceback details when troubleshooting.",
-    example:
-      "AI-powered analysis will provide a suggested correction here."
-  });
+      saveToHistory("ZeroDivisionError");
+      return;
     }
-  } 
+
+    // IndexError detection
+    if (
+      code.includes("[5]") ||
+      code.includes("[10]") ||
+      code.includes("[100]")
+    ) {
+      setResult({
+        type: "error",
+        title: "IndexError",
+        explanation:
+          "Your code may be trying to access a list position that does not exist.",
+        simple:
+          "You are asking for an item at a position outside the list.",
+        fix:
+          "Check the list length and use a valid index.",
+        prevent:
+          "Check the list length before accessing an index.",
+        example:
+          "numbers = [10, 20, 30]\nprint(numbers[0])"
+      });
+
+      saveToHistory("IndexError");
+      return;
+    }
+
+    // TypeError detection
+    if (
+      code.includes('"Age: " + age') ||
+      code.includes("'Age: ' + age")
+    ) {
+      setResult({
+        type: "error",
+        title: "TypeError",
+        explanation:
+          "Your code is trying to combine a string with a number.",
+        simple:
+          "Python cannot directly join text and a number using +.",
+        fix:
+          "Convert the number to a string before combining it with text.",
+        prevent:
+          "Check the data types before combining different values.",
+        example:
+          'age = 20\nprint("Age: " + str(age))'
+      });
+
+      saveToHistory("TypeError");
+      return;
+    }
+  }
+
+      // IndentationError detection
+    if (
+      code.includes("if ") &&
+      code.includes("print(") &&
+      !code.includes("    print(")
+    ) {
+      setResult({
+        type: "error",
+        title: "IndentationError",
+        explanation:
+          "Python expects the code inside a block to be properly indented.",
+        simple:
+          "Your code needs the correct spacing before the line inside the if statement.",
+        fix:
+          "Indent the code inside the block.",
+        prevent:
+          "Keep the same indentation level for statements inside a block.",
+        example:
+          'if True:\n    print("Hello")'
+      });
+
+      saveToHistory("IndentationError");
+      return;
+    }
+
+    // AttributeError detection
+    if (
+      code.includes(".upper") &&
+      code.includes("123")
+    ) {
+      setResult({
+        type: "error",
+        title: "AttributeError",
+        explanation:
+          "Your code is trying to use an attribute or method that does not belong to that object.",
+        simple:
+          "This type of value does not have the method you are trying to use.",
+        fix:
+          "Check the data type and make sure the method belongs to that object.",
+        prevent:
+          "Check the type of your variable before using its methods.",
+        example:
+          'name = "Riya"\nprint(name.upper())'
+      });
+
+      saveToHistory("AttributeError");
+      return;
+    }
+
+    // FileNotFoundError detection
+    if (
+      code.includes("open(") &&
+      code.includes(".txt")
+    ) {
+      setResult({
+        type: "error",
+        title: "FileNotFoundError",
+        explanation:
+          "Python could not find the file your program tried to open.",
+        simple:
+          "The file you asked Python to open does not exist at that location.",
+        fix:
+          "Check the filename and file path.",
+        prevent:
+          "Make sure the file exists and verify the path before opening it.",
+        example:
+          'file = open("data.txt", "r")'
+      });
+
+      saveToHistory("FileNotFoundError");
+      return;
+    }
+    // =========================
+  // NOTHING TO ANALYZE
+  // =========================
+
+  if (code.trim() === "" && error.trim() === "") {
+    setResult({
+      type: "warning",
+      title: "Nothing to analyze",
+      explanation:
+        "Please paste your code or error message first.",
+      simple:
+        "CodeSOS needs something to look at.",
+      fix:
+        "Paste your code and/or the error you received.",
+      example: ""
+    });
+
+    return;
+  }
+
+  // =========================
+  // ERROR MESSAGE DETECTION
+  // =========================
+
+  if (error.includes("NameError")) {
+    setResult({
+      type: "error",
+      title: "NameError",
+      explanation:
+        "Python cannot find a variable or name that your code is trying to use.",
+      simple:
+        "You used a name that Python does not know.",
+      fix:
+        "Check the spelling and make sure the variable is defined before using it.",
+      prevent:
+        "Define variables before using them and keep names consistent.",
+      example:
+        'username = "Riya"\nprint(username)'
+    });
+
+    saveToHistory("NameError");
+  }
+
+  else if (error.includes("SyntaxError")) {
+    setResult({
+      type: "error",
+      title: "SyntaxError",
+      explanation:
+        "Python found something in your code that does not follow its syntax rules.",
+      simple:
+        "There is a grammar mistake in your code.",
+      fix:
+        "Check brackets, quotes, colons, indentation, and spelling.",
+      prevent:
+        "Check syntax carefully and use an editor that highlights errors.",
+      example:
+        'print("Hello")'
+    });
+
+    saveToHistory("SyntaxError");
+  }
+
+  else if (error.includes("TypeError")) {
+    setResult({
+      type: "error",
+      title: "TypeError",
+      explanation:
+        "An operation was performed on an incompatible data type.",
+      simple:
+        "Python received a type of value that the operation cannot handle.",
+      fix:
+        "Check the data types and convert them if necessary.",
+      prevent:
+        "Check the type of your variables before performing operations.",
+      example:
+        'age = 20\nprint("Age: " + str(age))'
+    });
+
+    saveToHistory("TypeError");
+  }
+
+  else if (error.includes("IndexError")) {
+    setResult({
+      type: "error",
+      title: "IndexError",
+      explanation:
+        "Your code tried to access a list position that does not exist.",
+      simple:
+        "You asked for an item outside the list.",
+      fix:
+        "Use a valid index within the list range.",
+      prevent:
+        "Check the list length before accessing an index.",
+      example:
+        "numbers = [10, 20, 30]\nprint(numbers[0])"
+    });
+
+    saveToHistory("IndexError");
+  }
+
+  else if (error.includes("ModuleNotFoundError")) {
+    setResult({
+      type: "error",
+      title: "ModuleNotFoundError",
+      explanation:
+        "Python could not find the module that your code tried to import.",
+      simple:
+        "Python cannot find the library you asked for.",
+      fix:
+        "Check the module name and install the required package if necessary.",
+      prevent:
+        "Check package names carefully and keep dependencies installed.",
+      example:
+        "import math"
+    });
+
+    saveToHistory("ModuleNotFoundError");
+  }
+
+  else if (error.includes("ValueError")) {
+    setResult({
+      type: "error",
+      title: "ValueError",
+      explanation:
+        "A function received a value of the correct type but an inappropriate value.",
+      simple:
+        "The value itself is not acceptable for this operation.",
+      fix:
+        "Check the value before passing it to the function.",
+      prevent:
+        "Validate user input before processing it.",
+      example:
+        'age = int("20")'
+    });
+
+    saveToHistory("ValueError");
+  }
+
+  else if (error.includes("KeyError")) {
+    setResult({
+      type: "error",
+      title: "KeyError",
+      explanation:
+        "Your code tried to access a dictionary key that does not exist.",
+      simple:
+        "Python could not find that key in the dictionary.",
+      fix:
+        "Check whether the key exists before accessing it.",
+      prevent:
+        "Use .get() or check for the key before accessing it.",
+      example:
+        'user = {"name": "Riya"}\nprint(user.get("age"))'
+    });
+
+    saveToHistory("KeyError");
+  }
+
+  else if (error.includes("ZeroDivisionError")) {
+    setResult({
+      type: "error",
+      title: "ZeroDivisionError",
+      explanation:
+        "Your code tried to divide a number by zero.",
+      simple:
+        "You cannot divide something by 0.",
+      fix:
+        "Make sure the divisor is not zero before dividing.",
+      prevent:
+        "Validate the divisor before performing division.",
+      example:
+        "a = 10\nb = 2\nprint(a / b)"
+    });
+
+    saveToHistory("ZeroDivisionError");
+  }
+
+  else {
+    setResult({
+      type: "warning",
+      title: "Unknown Error",
+      explanation:
+        "CodeSOS could not identify this error yet.",
+      simple:
+        "This error is not currently covered by CodeSOS.",
+      fix:
+        "Check the traceback and look for the line where the error occurred.",
+      prevent:
+        "Read the traceback carefully and test your code step by step.",
+      example:
+        ""
+    });
+
+    saveToHistory("Unknown Error");
+  }
+}
 
   return (
     <div className="app">
