@@ -191,13 +191,23 @@ function resetInputs() {
       });
       saveToHistory("ZeroDivisionError");
 
-    }else {
-      setResult({
-        type: "unknown",
-      })
-    } 
-  }
-
+    } else {
+  setResult({
+    type: "unknown",
+    title: "Unknown Error",
+    explanation:
+      "CodeSOS could not identify this error using its built-in analyzer.",
+    simple:
+      "This error is not in our current list of common errors.",
+    fix:
+      "Try checking the error message carefully or use AI-powered analysis for deeper assistance.",
+    prevent:
+      "Keep your error messages and traceback details when troubleshooting.",
+    example:
+      "AI-powered analysis will provide a suggested correction here."
+  });
+    }
+  } 
 
   return (
     <div className="app">
