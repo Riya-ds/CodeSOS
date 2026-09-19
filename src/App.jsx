@@ -444,11 +444,27 @@ function resetInputs() {
       <div className="container">
 
         <header className="header">
-          <div className="logo">🆘 CodeSOS</div>
-          <p className="tagline">
-            Your coding error rescue assistant
-          </p>
-        </header>
+  <div className="brand-badge">BEGINNER CODING ASSISTANT</div>
+
+  <div className="logo">
+  <span className="logo-icon">🆘</span>
+  <span className="logo-text">CodeSOS</span>
+</div>
+
+  <p className="tagline">
+    Turn confusing coding errors into simple fixes.
+  </p>
+
+  <div className="header-flow">
+    <span>💻 Paste</span>
+    <span>→</span>
+    <span>🔍 Analyze</span>
+    <span>→</span>
+    <span>💡 Understand</span>
+    <span>→</span>
+    <span>🔧 Fix</span>
+  </div>
+</header>
 
         <div className="how-it-works">
   <h2>🧠 How CodeSOS Works</h2>
